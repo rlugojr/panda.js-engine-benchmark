@@ -84,6 +84,4 @@ game.createScene('Main', {
     }
 });
 
-game.Debug.enabled = true;
-
 });
