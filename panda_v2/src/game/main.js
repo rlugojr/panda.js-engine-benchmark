@@ -18,28 +18,23 @@ var maxY = 600;
 var minY = 0;
 
 game.createScene('Main', {
-    backgroundColor: 0xffffff,
-
     init: function() {
-        game.system.stage.removeChild(this.stage);
-        this.container = new game.PIXI.SpriteBatch();
-        this.texture = game.getTexture('panda.png');
-        game.system.stage.addChild(this.container);
-
-        this.addSprite(20000);
-
+        this.addSprite(5000);
+        console.log(this.stage.width, this.stage.height);
         startTime = Date.now();
         last = startTime + 2000; // Skip first 2 seconds
     },
 
     addSprite: function(count) {
         for (var i = 0; i < count; i++) {
-            var sprite = new game.Sprite(this.texture);
+            var sprite = new game.Sprite('panda.png');
             sprite.speedX = Math.random() * 10;
             sprite.speedY = Math.random() * 10 - 5;
-            sprite.anchor.set(0.5, 1);
-            sprite.position.set(sprite.width / 2, sprite.height);
-            sprite.addTo(this.container);
+            sprite.rotationSpeed = 0.1 + Math.random() * 0.3;
+            sprite.anchor.set(sprite.width / 2, sprite.height / 2);
+            sprite.position.x = Math.random() * maxX;
+            sprite.position.y = Math.random() * maxY;
+            sprite.addTo(this.stage);
             sprites.push(sprite);
         }
     },
@@ -55,7 +50,7 @@ game.createScene('Main', {
             last = now;
             frames = 0;
         }
-        if (now >= startTime + 1000 * 60) {
+        if (now >= startTime + 1000 * 10) {
             var total = 0;
             for (var i = 0; i < fps.length; i++) {
                 total += fps[i];
@@ -66,7 +61,7 @@ game.createScene('Main', {
 
             ready = true;
 
-            game.system.stopRunLoop();
+            game.system._stopRunLoop();
             alert('FPS: ' + average);
             return;
         }
@@ -78,6 +73,7 @@ game.createScene('Main', {
             sprite.position.x += sprite.speedX;
             sprite.position.y += sprite.speedY;
             sprite.speedY += gravity;
+            sprite.rotation += sprite.rotationSpeed;
             if (sprite.position.x > maxX) {
                 sprite.speedX *= -1;
                 sprite.position.x = maxX;
@@ -99,8 +95,6 @@ game.createScene('Main', {
                 sprite.position.y = minY;
             }
         }
-
-        this._super();
     }
 });
 

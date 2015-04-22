@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Pixi.js benchmark</title>
 
-    <script type="text/javascript" src="src/pixi.js"></script>
+    <script type="text/javascript" src="pixi.js"></script>
     <style type="text/css">
     	body {
     		margin: 0;
@@ -21,7 +21,7 @@
 		var minX = 0;
 		var maxY = 600;
 		var minY = 0;
-		var startBunnyCount = 20000;
+		var startBunnyCount = 5000;
 		var container;
 		var amount = 100;
 		var canvas = document.createElement('canvas');
@@ -39,31 +39,30 @@
 			startTime = Date.now();
 			last = startTime + 2000; // Skip first 2 seconds
 
-			renderer = PIXI.autoDetectRenderer(800, 600);
+			renderer = new PIXI.CanvasRenderer(800, 600);
 			stage = new PIXI.Stage(0xFFFFFF);
 			
 			document.body.appendChild(renderer.view);
 			renderer.view.style.position = "absolute";
 
-			requestAnimFrame(update);
+			requestAnimationFrame(update);
 			
-			wabbitTexture = new PIXI.Texture.fromImage("media/panda.png")
-
-			container = new PIXI.SpriteBatch();
-			stage.addChild(container);
+			wabbitTexture = new PIXI.Texture.fromImage("panda.png")
 			
 			for (var i = 0; i < startBunnyCount; i++) 
 			{
 				var bunny = new PIXI.Sprite(wabbitTexture);
 				bunny.speedX = Math.random() * 10;
 				bunny.speedY = (Math.random() * 10) - 5;
-				
 				bunny.anchor.x = 0.5;
-				bunny.anchor.y = 1;
+				bunny.anchor.y = 0.5;
+				bunny.position.x = Math.random() * maxX;
+				bunny.position.y = Math.random() * maxY;
 				sprites.push(bunny);
 				
-				container.addChild(bunny);
+				stage.addChild(bunny);
 			}
+			console.log(stage.width, stage.height);
 		};
 
 		function update() {
@@ -77,7 +76,7 @@
 			    last = now;
 			    frames = 0;
 			}
-			if (now >= startTime + 1000 * 60) {
+			if (now >= startTime + 1000 * 10) {
 			    var total = 0;
 			    for (var i = 0; i < fps.length; i++) {
 			        total += fps[i];
@@ -99,6 +98,7 @@
 				sprite.position.x += sprite.speedX;
 				sprite.position.y += sprite.speedY;
 				sprite.speedY += gravity;
+				sprite.rotation += 0.1;
 				if (sprite.position.x > maxX) {
 					sprite.speedX *= -1;
 					sprite.position.x = maxX;
@@ -122,7 +122,7 @@
 			}
 
 			renderer.render(stage);
-			requestAnimFrame(update);
+			requestAnimationFrame(update);
 		};
 	</script>
 </body>
